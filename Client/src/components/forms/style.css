@@ -1,0 +1,17 @@
+body {
+    background-color: lightblue;
+    padding: 5px;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  
+}
+
+.o{
+  padding-top: 40px;
+  
+}

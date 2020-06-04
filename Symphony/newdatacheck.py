@@ -33,25 +33,29 @@ except:
 
 class CsvToDict:
     optionIDSymname = {}
-    reader = csv.reader(open('OptionIds.txt', 'r'))
+    reader = csv.reader(open(
+        r'C:\Users\Mudraksh_Server1\Desktop\ServerCodes\Symphony Latest API\Symphony Order Server Dealer\OptionIds.txt', 'r'))
     for row in reader:
         v1, k = row
         optionIDSymname[v1] = k
 
     futIDSymname = {}
-    reader = csv.reader(open('FuturesIds.txt', 'r'))
+    reader = csv.reader(open(
+        r'C:\Users\Mudraksh_Server1\Desktop\ServerCodes\Symphony Latest API\Symphony Order Server Dealer\FuturesIds.txt', 'r'))
     for row in reader:
         v1, k = row
         futIDSymname[v1] = k
 
     commodityIDSymname = {}
-    reader = csv.reader(open('MCXIds.txt', 'r'))
+    reader = csv.reader(open(
+        r'C:\Users\Mudraksh_Server1\Desktop\ServerCodes\Symphony Latest API\Symphony Order Server Dealer\MCXIds.txt', 'r'))
     for row in reader:
         v1, k = row
         commodityIDSymname[v1] = k
 
     stocksIDSymname = {}
-    reader = csv.reader(open('stocksIds.txt', 'r'))
+    reader = csv.reader(open(
+        r'C:\Users\Mudraksh_Server1\Desktop\ServerCodes\Symphony Latest API\Symphony Order Server Dealer\stocksIds.txt', 'r'))
     for row in reader:
         v1, k = row
         stocksIDSymname[v1] = k
@@ -109,7 +113,9 @@ def check_data():
                         symbol = stocksMap[symbolID]
                     else:
                         symbol = symbolID
-                    OrderAverageTradedPrice = order['OrderAverageTradedPrice']
+                    OrderAverageTradedPrice = str(order['OrderAverageTradedPrice']).replace(
+                        ',', '')
+                    print(OrderAverageTradedPrice)
                     quantity = order['quantity']
                     buy_sell = order['buy_sell']
                     orderStatus = order['orderStatus']
@@ -117,21 +123,21 @@ def check_data():
                     post = {
                         "algoName": algoname,
                         "symbol": symbol,
-                        "quantity": quantity,
+                        "quantity": int(quantity),
                         "buy_sell": buy_sell,
                         "time_stamp": time_stamp,
                         "clientID": clientID,
                         "exchangeSegment": exchangeSegment,
-                        "exchangeInstrumentID":exchangeInstrumentID,
-                        "productType" : productType,
-                        "orderStatus" : orderStatus,
-                        "OrderAverageTradedPrice" : OrderAverageTradedPrice,
+                        "exchangeInstrumentID": exchangeInstrumentID,
+                        "productType": productType,
+                        "orderStatus": orderStatus,
+                        "OrderAverageTradedPrice": OrderAverageTradedPrice,
                     }
                     # print(post)
                     savedata(post, date)
                     new_db[filtered_collec].insert(post)
                 except Exception as e:
-                    print (e)
+                    print(e)
                     continue
         # print('\n')
         #     time.sleep(2)

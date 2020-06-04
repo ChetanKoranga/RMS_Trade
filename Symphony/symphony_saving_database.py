@@ -74,7 +74,7 @@ class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 if __name__ == '__main__':
 
 	''' host and port when the gdf server would run'''
-	host, port = "192.168.1.80", 42612
+	host, port = "192.168.0.103", 42612
 	# host, port = "192.168.0.113", 42612
 
 	server = ThreadedTCPServer((host, port), ThreadedTCPRequestHandler)

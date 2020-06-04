@@ -7,11 +7,12 @@ from pathlib import Path
 from time import sleep
 import pymongo
 from pymongo import MongoClient
+from bson import ObjectId
 # import pprint
 import datetime
 
 connection = MongoClient('localhost', 27017)
-db = connection.exitpnl
+db = connection.finalpnl
 
 __author__ = 'chetan'
 
@@ -22,23 +23,30 @@ app.config['DEBUG'] = True
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode=None, logger=False, engineio_logger=False)
 
 
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
+
+
 
 def totalpnldata():
     # handle posts colection
     date = datetime.date.today()
-    collec = f'exitpnl_{date}'
+    collec = f'finalpnl_{date}'
 
     while True:
         emitted = []
         # timestamp = str(datetime.datetime.now().time())
         data = db[collec]
-        rec_data = data.find({}, {"_id": 0})
+        rec_data = data.find({})
         for i in rec_data:
             # print(i)
             emitted.append(i)
 
-        dictData = {'data': emitted}
-        emt = json.dumps(dictData)
+
+        emt = JSONEncoder().encode(emitted)
         # print(emt)
         socketio.emit('total_pnl', emt, broadcast=True)
         socketio.sleep(1)

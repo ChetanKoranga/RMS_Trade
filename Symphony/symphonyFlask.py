@@ -1,6 +1,5 @@
-from flask import Flask
+from flask import Flask,request
 from flask_socketio import SocketIO, send, emit
-from bson import ObjectId
 import os
 import json
 import socket
@@ -10,6 +9,7 @@ import pymongo
 from pymongo import MongoClient
 # import pprint
 import datetime
+from bson import ObjectId
 
 
 connection = MongoClient('localhost', 27017)
@@ -29,6 +29,7 @@ class JSONEncoder(json.JSONEncoder):
             return str(o)
         return json.JSONEncoder.default(self, o)
 
+
 def cumulativedata():
     # handle posts colection
     date = datetime.date.today()
@@ -43,8 +44,7 @@ def cumulativedata():
             # print(i)
             emitted.append(i)
 
-        dictData = {'data': emitted}
-        emt = JSONEncoder().encode(dictData)
+        emt = JSONEncoder().encode(emitted)
         # print(emt)
         socketio.emit('cumulative_data', emt, broadcast=True)
         socketio.sleep(1)
@@ -54,9 +54,9 @@ def cumulativedata():
 def socketcon():
     # need visibility of the global thread object
     print('Client connected')
+    print(request.sid)
     socketio.start_background_task(cumulativedata)
 
 
 if __name__ == ("__main__"):
-    # socketio.run(app, host="192.168.1.6", port=5002)
-    socketio.run(app, host="192.168.43.188", port=5002)
+    socketio.run(app, host="192.168.0.103", port=5002)
