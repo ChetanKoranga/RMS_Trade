@@ -4,6 +4,7 @@ import { loadResponseDataSocket, ResponseData } from "../../actions";
 import io from "socket.io-client";
 import { Sticky, Breadcrumb } from "semantic-ui-react";
 import "./responsefeed.css";
+import { Helmet } from "react-helmet";
 
 let columns = [
   "ClientID",
@@ -21,7 +22,7 @@ let buy_sell_flag;
 let cancelrejectreason_flag;
 let timestamp_flag;
 
-var moment = require('moment');
+var moment = require("moment");
 
 const MapStateToProps = (state) => {
   console.log(state);
@@ -39,7 +40,7 @@ class Responsedata extends React.Component {
     //    console.log(dispatch)
     // console.log(this.props)
     // socket = io.connect("http://192.168.1.6:5003")
-    socket = io.connect("http://192.168.0.103:5003");
+    socket = io.connect("localhost:5003");
     dispatch(loadResponseDataSocket(socket));
 
     socket.on("response_data", (res) => {
@@ -56,6 +57,9 @@ class Responsedata extends React.Component {
     // console.log(this.props)
     return (
       <div>
+        <Helmet>
+          <title>Resaponse Log</title>
+        </Helmet>
         <Sticky>
           <Breadcrumb>
             <h2>ORDER RESPONSE FEED</h2>
@@ -77,26 +81,22 @@ class Responsedata extends React.Component {
               if (row.cancelrejectreason !== "")
                 cancelrejectreason_flag = "negative";
               else cancelrejectreason_flag = "";
-              var time=moment().format("HH:mm:ss");
+              var time = moment().format("HH:mm:ss");
               var start = moment.utc(time, "HH:mm:ss");
-              console.log(start)
+              console.log(start);
 
-
-              var dt = (row.time_stamp).slice(0,8);
-              console.log(dt.slice(0,8));
+              var dt = row.time_stamp.slice(0, 8);
+              console.log(dt.slice(0, 8));
               var end = moment.utc(dt, "HH:mm:ss");
               var d = moment.duration(start.diff(end));
-              var s = moment.utc(+d).format('HHmmss');
-
-              
-             
+              var s = moment.utc(+d).format("HHmmss");
 
               // console.log(s);
               if (s <= 100) timestamp_flag = "Yellowcell";
               else if (s > 100) timestamp_flag = "normal";
 
               return (
-                <tr key={row._id} className={timestamp_flag} >
+                <tr key={row._id} className={timestamp_flag}>
                   <td>{row.clientID}</td>
                   <td>{row.time_stamp}</td>
                   <td>{row.algoname}</td>

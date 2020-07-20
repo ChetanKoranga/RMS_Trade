@@ -9,6 +9,7 @@ let columns = [
   "ClientID",
   "Algo",
   "STOPER",
+  "MAINS",
   "Start/Stop Status",
   "LossLimit",
   "Quantity_Multiple",
@@ -138,6 +139,7 @@ class TradeState extends React.Component {
                       <Button color="red" onClick={()=>this.toggle(row.algoname,row.ClientID)}>STOP</Button>   
                       
                     </td>
+                    <td>{row.main}</td>
                     <td>{row.Start_Stop}</td>
                     <td>{row.losslimit}</td>
                     <td>{row.quantity_multiple}</td>

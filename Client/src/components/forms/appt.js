@@ -7,10 +7,14 @@ import { Menu, Form, Select, Button } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import "./style.css";
+import AddModal from "./AddModal";
+import { Helmet } from "react-helmet";
 var moment = require("moment");
 
 var time = moment().format("hh:mm:ss.SSSS");
 let alertdata;
+let mainvalue;
+let finishbuttonvalue;
 
 const Clientid = [
   { key: "a", text: "ALL", value: "All" },
@@ -32,6 +36,7 @@ const Clientid = [
 const toggle = [
   { key: "a", text: "START", value: "START" },
   { key: "b", text: "STOP", value: "STOP" },
+  { key: "c", text: "FINISH", value: "FINISH" },
 ];
 
 class Forms extends Component {
@@ -51,7 +56,13 @@ class Forms extends Component {
       tradeLimitPerSecond: "",
       maxvalueofsymbolcheck: "",
       timestamp: time,
+      statusall: "",
       visible: false,
+      visiblemain: false,
+      visibleintra: false,
+      showModal: false,
+      showmainModal: false,
+      mainscheck: "",
     };
     // this.losslimit=React.createRef();
     this.handleAlgoChange = this.handleAlgoChange.bind(this);
@@ -59,7 +70,16 @@ class Forms extends Component {
     this.handleStatusChange = this.handleStatusChange.bind(this);
     this.render = this.render.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.finishSubmit = this.finishSubmit.bind(this);
     this.handleGet = this.handleGet.bind(this);
+    this.finishInfraday = this.finishInfraday.bind(this);
+    this.finishOvernight = this.finishOvernight.bind(this);
+    this.restartInfraday = this.restartInfraday.bind(this);
+    this.restartOvernight = this.restartOvernight.bind(this);
+    this.handlemainsoff = this.handlemainsoff.bind(this);
+    this.handlemainson = this.handlemainson.bind(this);
+    this.mainSubmit = this.mainSubmit.bind(this);
+    this.mainUpdate = this.mainUpdate.bind(this);
     this.algos = [];
 
     this.getAlgoDatafromapi();
@@ -75,6 +95,24 @@ class Forms extends Component {
     this.tradestatetogglerUpdate(submission_data);
   }
 
+  finishSubmit(event) {
+    event.preventDefault();
+    // alert("An essay was submitted:  " + JSON.stringify(this.state));
+
+    const finishdata = this.state;
+
+    console.log(finishdata);
+    this.finishUpdate(finishdata);
+    this.setState({ showModal: false });
+  }
+
+  mainSubmit = () => {
+    const maindata = { mainscheck: this.state.mainscheck };
+    console.log(maindata);
+    this.mainUpdate(maindata);
+    this.setState({ showmainModal: false });
+  };
+
   handleGet(event) {
     event.preventDefault();
     const getdata = this.state;
@@ -82,6 +120,50 @@ class Forms extends Component {
     console.log(getdata);
     this.fetcherUpdate(getdata);
   }
+
+  finishInfraday() {
+    this.setState({
+      showModal: true,
+      statusall: "finishinfraday",
+    });
+  }
+
+  finishOvernight() {
+    this.setState({
+      showModal: true,
+      statusall: "finishovernight",
+    });
+  }
+
+  restartInfraday() {
+    this.setState({
+      showModal: true,
+      statusall: "restartinfraday",
+    });
+  }
+
+  restartOvernight() {
+    this.setState({
+      showModal: true,
+      statusall: "restartovernight",
+    });
+  }
+
+  handlemainson = (e) => {
+    var state = Object.assign(this.state, {
+      showmainModal: true,
+      mainscheck: "ON",
+    });
+    this.setState(state);
+  };
+
+  handlemainsoff = (e) => {
+    var state = Object.assign(this.state, {
+      showmainModal: true,
+      mainscheck: "OFF",
+    });
+    this.setState(state);
+  };
 
   handleAlgoChange = (event, { value }) => {
     this.setState({
@@ -127,6 +209,38 @@ class Forms extends Component {
       console.log("success");
     }
     console.log("heyaaakomalu", submission_data);
+  };
+
+  finishUpdate = async (finishdata) => {
+    const res = await fetch("http://127.0.0.1:5000/finishupdate", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(finishdata),
+    });
+    console.log("heyaaakomalu", finishdata);
+    const response = await res.json();
+    console.log(response);
+    finishbuttonvalue = JSON.stringify(response.data);
+    this.setState({ visibleintra: true });
+    console.log("success intra/overnight");
+  };
+
+  mainUpdate = async (maindata) => {
+    const res = await fetch("http://127.0.0.1:5000/mainsUpdate", {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(maindata),
+    });
+    console.log("heyaaakomalu", maindata);
+    const response = await res.json();
+    console.log(response);
+    mainvalue = JSON.stringify(response.data);
+    this.setState({ visiblemain: true });
+    console.log("success main");
   };
 
   fetcherUpdate = async (getdata) => {
@@ -184,8 +298,13 @@ class Forms extends Component {
   };
 
   render() {
+    let closeModal = () => this.setState({ showModal: false });
+    let closemainModal = () => this.setState({ showmainModal: false });
     return (
       <div className="container">
+        <Helmet>
+          <title>Forms</title>
+        </Helmet>
         <Menu style={{ margin: 0 }}>
           <Link to="/forms">
             <Menu.Item active={true}>Start/Stop and OTP</Menu.Item>
@@ -198,6 +317,84 @@ class Forms extends Component {
         <Addremove onClickalgo={this.onClickalgo} />
 
         <Form>
+          <Form.Group>
+            <Button onClick={this.handlemainson} color="green">
+              MAIN ON
+            </Button>
+            <Button onClick={this.handlemainsoff} color="red">
+              MAIN OFF
+            </Button>
+            <div className="container">
+              <Alert
+                variant="warning"
+                show={this.state.visiblemain}
+                style={{
+                  flexWrap: "wrap",
+                  textAlign: "centre",
+                  wordWrap: "break-word",
+                }}
+              >
+                MAIN STATUS:{mainvalue}
+              </Alert>
+            </div>
+          </Form.Group>
+
+          <Form.Group>
+            <Button
+              // className= 'Red'
+              // color={this.state.colorintrafinish}
+              onClick={this.finishInfraday}
+              color="orange"
+            >
+              FINISH INTRADAY
+            </Button>
+            <Button
+              // color={this.state.colorintrarestart}
+              onClick={this.restartInfraday}
+              color="olive"
+            >
+              RESTART INTRADAY
+            </Button>
+            <div className="container">
+              <Alert
+                variant="warning"
+                show={this.state.visibleintra}
+                style={{
+                  flexWrap: "wrap",
+                  textAlign: "centre",
+                  wordWrap: "break-word",
+                }}
+              >
+                INTRA/OVERNIGHT STATUS:{finishbuttonvalue}
+              </Alert>
+            </div>
+            <Button
+              // color={this.state.coloroverfinish}
+              onClick={this.finishOvernight}
+              color="orange"
+            >
+              FINISH OVERNIGHT
+            </Button>
+            <Button
+              // color={this.state.coloroverrestart}
+              onClick={this.restartOvernight}
+              color="olive"
+            >
+              RESTART OVERNIGHT
+            </Button>
+            <AddModal
+              show={this.state.showModal}
+              onHide={closeModal}
+              sendAll={this.finishSubmit}
+            />
+
+            <AddModal
+              show={this.state.showmainModal}
+              onHide={closemainModal}
+              sendAll={this.mainSubmit}
+            />
+          </Form.Group>
+
           <Form.Group widths="equal">
             <Form.Field
               control={Select}
@@ -359,9 +556,11 @@ class Forms extends Component {
               </div>
             </ButtonToolbar>
           </Form.Group>
-          <Button color="yellow" onClick={this.handleGet}>
-            Get Values
-          </Button>
+          <Form.Group>
+            <Button color="yellow" onClick={this.handleGet}>
+              Get Values
+            </Button>
+          </Form.Group>
         </Form>
         <Otpform onClickalgo={this.onClickalgo} />
       </div>

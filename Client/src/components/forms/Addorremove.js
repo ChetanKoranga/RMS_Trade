@@ -61,7 +61,9 @@ class Addremove extends Component {
         <Form>
           <Form.Group widths="equal">
             <Form.Field>
-              <h2 class="ui red label" style={{marginLeft:470, fontSize:20}}>START STOP</h2>
+              <h2 style={{ marginLeft: 420, fontSize: 20 }}>
+                ALGO START STOP CONTROLLER
+              </h2>
               <label>Add_Algo</label>
               <input
                 name="algolist"

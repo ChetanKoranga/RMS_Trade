@@ -47,6 +47,11 @@ const tradeStateReducer = (state = initialState, action) => {
   return state;
 };
 
+const AlarmReducer = (state = initialState, action) => {
+  if (action.type === "ALARM_DATA") return action.payload;
+  return state;
+};
+
 const combined = combineReducers({
   CumulativeData: cumulativeReducer,
   NetPositionsData: netpositionsReducer,
@@ -57,6 +62,7 @@ const combined = combineReducers({
   TradeState: tradeStateReducer,
   OptionsCallData: OptionsCallReducer,
   OptionsPutData: OptionsPutReducer,
+  AlarmData: AlarmReducer,
 });
 
 export default combined;

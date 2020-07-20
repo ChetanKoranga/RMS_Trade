@@ -5,12 +5,14 @@ import io from "socket.io-client";
 import { Menu, Button } from "semantic-ui-react";
 import { Link } from "react-router-dom";
 import AddModal from "./AddModal";
+import { Helmet } from "react-helmet";
 // import App from "./app";
 
 let columns = [
   "ClientID",
   "Algo",
   "STOPER",
+  "MAINS",
   "Start/Stop Status",
   "LossLimit",
   "Quantity_Multiple",
@@ -20,7 +22,7 @@ let columns = [
   "Slice Size",
   "Wait Time",
   "Trade Limit Per Second",
-  "Max Value Of Symbol Check"
+  "Max Value Of Symbol Check",
 ];
 let socket;
 // let status;
@@ -32,8 +34,8 @@ class TradeState extends React.Component {
     super(props);
     this.state = {
       showModal: false,
-      algo:'',
-      client:''
+      algo: "",
+      client: "",
     };
     this.handlebutton = this.handlebutton.bind(this);
     const { dispatch } = this.props;
@@ -60,10 +62,8 @@ class TradeState extends React.Component {
     console.log("heyaaakomalu", { algoname: algoname, clientid: clientid });
   };
 
-  toggle = (algo,client) => {
-    this.setState({ showModal: true,
-      algoname:algo,
-      clientid:client });
+  toggle = (algo, client) => {
+    this.setState({ showModal: true, algoname: algo, clientid: client });
   };
 
   // componentWillUnmount() {
@@ -76,102 +76,112 @@ class TradeState extends React.Component {
     // console.log(this.props)
     return (
       <div>
-      <Fragment>
-        <Menu style={{ margin: 0 }}>
-          <a href="tradestatetoggler">
-            <Menu.Item active={true}>ALL</Menu.Item>
-          </a>
-          <Link to="/d18138status">
-            <Menu.Item>D18138</Menu.Item>
-          </Link>
-          <Link to="/d7730001status">
-            <Menu.Item>D7730001</Menu.Item>
-          </Link>
+        <Helmet>
+          <title>TradeState</title>
+        </Helmet>
+        <Fragment>
+          <Menu style={{ margin: 0 }}>
+            <a href="tradestatetoggler">
+              <Menu.Item active={true}>ALL</Menu.Item>
+            </a>
+            <Link to="/d18138status">
+              <Menu.Item>D18138</Menu.Item>
+            </Link>
+            <Link to="/d7730001status">
+              <Menu.Item>D7730001</Menu.Item>
+            </Link>
 
-          <Link to="/d7730003status">
-            <Menu.Item>D7730003</Menu.Item>
-          </Link>
-          <Link to="/d7730004status">
-            <Menu.Item>D7730004</Menu.Item>
-          </Link>
-          <Link to="/d7730005status">
-            <Menu.Item>D7730005</Menu.Item>
-          </Link>
-          <Link to="/d7730006status">
-            <Menu.Item>D7730006</Menu.Item>
-          </Link>
-          <Link to="/d7730007status">
-            <Menu.Item>D7730007</Menu.Item>
-          </Link>
-          <Link to="/d7730008status">
-            <Menu.Item>D7730008</Menu.Item>
-          </Link>
-          <Link to="/d7730009status">
-            <Menu.Item>D7730009</Menu.Item>
-          </Link>
-          <Link to="/d8460002status">
-            <Menu.Item>D8460002</Menu.Item>
-          </Link>
-          <Link to="/d8460003status">
-            <Menu.Item>D8460003</Menu.Item>
-          </Link>
-          <Link to="/V7410004status">
-            <Menu.Item>V7410004</Menu.Item>
-          </Link>
-        </Menu>
+            <Link to="/d7730003status">
+              <Menu.Item>D7730003</Menu.Item>
+            </Link>
+            <Link to="/d7730004status">
+              <Menu.Item>D7730004</Menu.Item>
+            </Link>
+            <Link to="/d7730005status">
+              <Menu.Item>D7730005</Menu.Item>
+            </Link>
+            <Link to="/d7730006status">
+              <Menu.Item>D7730006</Menu.Item>
+            </Link>
+            <Link to="/d7730007status">
+              <Menu.Item>D7730007</Menu.Item>
+            </Link>
+            <Link to="/d7730008status">
+              <Menu.Item>D7730008</Menu.Item>
+            </Link>
+            <Link to="/d7730009status">
+              <Menu.Item>D7730009</Menu.Item>
+            </Link>
+            <Link to="/d8460002status">
+              <Menu.Item>D8460002</Menu.Item>
+            </Link>
+            <Link to="/d8460003status">
+              <Menu.Item>D8460003</Menu.Item>
+            </Link>
+            <Link to="/V7410004status">
+              <Menu.Item>V7410004</Menu.Item>
+            </Link>
+          </Menu>
 
-        <table className="ui celled table">
-          <thead>
-            <tr>
-              {columns.map((col) => (
-                <th key={col}>{col}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.data.map((row) => {
-              // console.log(this.props.data);
-              // if (row.buy_sell === "BUY") buy_sell_flag = "positive";
-              // else buy_sell_flag = "negative";
+          <table className="ui celled table">
+            <thead>
+              <tr>
+                {columns.map((col) => (
+                  <th key={col}>{col}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {this.props.data.map((row) => {
+                // console.log(this.props.data);
+                // if (row.buy_sell === "BUY") buy_sell_flag = "positive";
+                // else buy_sell_flag = "negative";
 
-              // if (row.cancelrejectreason !== "")
-              //   cancelrejectreason_flag = "negative";
-              // else cancelrejectreason_flag = "";
+                // if (row.cancelrejectreason !== "")
+                //   cancelrejectreason_flag = "negative";
+                // else cancelrejectreason_flag = "";
 
-              if (row.Start_Stop !== "STOP")
-                return (
-                  <tr key={row._id}>
-                    <td>{row.ClientID}</td>
-                    <td>{row.algoname}</td>
-                    <td>
-                      <Button color="red" onClick={()=>this.toggle(row.algoname,row.ClientID)}>
-                        STOP
-                      </Button>
-                     
-                    </td>
-                    <td>{row.Start_Stop}</td>
-                    <td>{row.losslimit}</td>
-                    <td>{row.quantity_multiple}</td>
-                    <td>{row.TradeLimitPerDay}</td>
-                    <td>{row.QuantityLimitPerTrade}</td>
-                    <td>{row.lotSize}</td>
-                    <td>{row.sliceSize}</td>
-                    <td>{row.waitTime}</td>
-                    <td>{row.tradeLimitPerSecond}</td>
-                    <td>{row.maxvalueofsymbolcheck}</td>
-                  </tr>
-                );
-              return null;
-            })}
-          </tbody>
-        </table>
-      </Fragment>
-       <AddModal
-       show={this.state.showModal}
-       onHide={closeModal}
-       sendAll={() => this.handlebutton(this.state.algoname,this.state.clientid)}
-     />
-     </div>
+                if (row.Start_Stop !== "STOP")
+                  return (
+                    <tr key={row._id}>
+                      <td>{row.ClientID}</td>
+                      <td>{row.algoname}</td>
+                      <td>
+                        <Button
+                          color="red"
+                          onClick={() =>
+                            this.toggle(row.algoname, row.ClientID)
+                          }
+                        >
+                          STOP
+                        </Button>
+                      </td>
+                      <td>{row.main}</td>
+                      <td>{row.Start_Stop}</td>
+                      <td>{row.losslimit}</td>
+                      <td>{row.quantity_multiple}</td>
+                      <td>{row.TradeLimitPerDay}</td>
+                      <td>{row.QuantityLimitPerTrade}</td>
+                      <td>{row.lotSize}</td>
+                      <td>{row.sliceSize}</td>
+                      <td>{row.waitTime}</td>
+                      <td>{row.tradeLimitPerSecond}</td>
+                      <td>{row.maxvalueofsymbolcheck}</td>
+                    </tr>
+                  );
+                return null;
+              })}
+            </tbody>
+          </table>
+        </Fragment>
+        <AddModal
+          show={this.state.showModal}
+          onHide={closeModal}
+          sendAll={() =>
+            this.handlebutton(this.state.algoname, this.state.clientid)
+          }
+        />
+      </div>
     );
   }
 }

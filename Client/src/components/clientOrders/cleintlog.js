@@ -4,6 +4,7 @@ import { Sticky, Breadcrumb } from "semantic-ui-react";
 import "./clientfeed.css";
 import { ClientOrdersData, loadClientOrdersDataSocket } from "../../actions";
 import { connect } from "react-redux";
+import { Helmet } from "react-helmet";
 let columns = [
   "ClientID",
   "Time Stamp",
@@ -44,6 +45,9 @@ class ClientOrdersFeed extends React.Component {
     // console.log(this.props)
     return (
       <div>
+        <Helmet>
+          <title>Algo Signal Feed</title>
+        </Helmet>
         <Sticky>
           <Breadcrumb>
             <h2>Algo Signal Feed</h2>

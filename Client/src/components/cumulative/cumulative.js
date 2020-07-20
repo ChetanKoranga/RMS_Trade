@@ -5,6 +5,7 @@ import io from "socket.io-client";
 import { Link } from "react-router-dom";
 
 import { Menu, Sticky, Breadcrumb } from "semantic-ui-react";
+import { Helmet } from "react-helmet";
 
 let columns = [
   "Client ID",
@@ -37,6 +38,9 @@ class CumulativeData extends React.Component {
     // console.log(this.props)
     return (
       <div>
+        <Helmet>
+          <title>Live Clientwise Strategy-Symbol-Quantity</title>
+        </Helmet>
         <Sticky>
           <Menu style={{ margin: 0 }}>
             <a href="/">

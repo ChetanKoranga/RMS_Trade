@@ -5,6 +5,7 @@ import io from "socket.io-client";
 import { Link } from "react-router-dom";
 
 import { Menu, Sticky, Breadcrumb } from "semantic-ui-react";
+import { Helmet } from "react-helmet";
 
 let columns = ["Client ID", "Symbol", "Net Quantity"];
 let socket;
@@ -30,6 +31,9 @@ class NCP extends React.Component {
     // console.log(this.props)
     return (
       <div>
+        <Helmet>
+          <title>Client Net Positions</title>
+        </Helmet>
         <Sticky>
           <Menu style={{ margin: 0 }}>
             <a href="/clientnetposition">

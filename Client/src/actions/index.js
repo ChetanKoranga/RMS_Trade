@@ -48,6 +48,11 @@ export const MonitorData = (res) => ({
   payload: JSON.parse(res),
 });
 
+export const AlarmData = (res) => ({
+  type: "ALARM_DATA",
+  payload: JSON.parse(res),
+});
+
 export const loadInitialDataSocket = (socket) => {
   return (dispatch) => {
     // dispatch(clearAllItems())
@@ -135,6 +140,14 @@ export const loadMonitorDataSocket = (socket) => {
   return (dispatch) => {
     socket.on("monitor_data", (res) => {
       dispatch(MonitorData(res));
+    });
+  };
+};
+
+export const loadAlarmDataSocket = (socket) => {
+  return (dispatch) => {
+    socket.on("alarm_data", (res) => {
+      dispatch(AlarmData(res));
     });
   };
 };

@@ -2,22 +2,23 @@ import React from "react";
 import { connect } from "react-redux";
 import {
   ClientTotalPnlData,
-  loadClientTotalPnlDataSocket
+  loadClientTotalPnlDataSocket,
 } from "../../actions";
 import io from "socket.io-client";
 import { Link } from "react-router-dom";
 
 import { Menu, Sticky, Breadcrumb } from "semantic-ui-react";
+import { Helmet } from "react-helmet";
 
 let columns = ["Client ID", "Net PnL"];
 let pnl_flag;
 let socket;
 
-const MapStateToProps = state => {
+const MapStateToProps = (state) => {
   const sortedstate = state.ClientTotalPnLData;
   console.log(state);
   const sorted = {
-    data: sortedstate.sort((a, b) => a.clientID.localeCompare(b.clientID))
+    data: sortedstate.sort((a, b) => a.clientID.localeCompare(b.clientID)),
   };
   return sorted;
 };
@@ -31,7 +32,7 @@ class ClientTotalPnl extends React.Component {
     // socket = io.connect("http://192.168.1.6:5002")
     socket = io.connect("http://192.168.0.103:5008");
     dispatch(loadClientTotalPnlDataSocket(socket));
-    socket.on("unRealized_data", res => {
+    socket.on("unRealized_data", (res) => {
       dispatch(ClientTotalPnlData(res));
     });
   }
@@ -45,6 +46,9 @@ class ClientTotalPnl extends React.Component {
     // console.log(this.props.data)
     return (
       <div>
+        <Helmet>
+          <title>Clientwise Net PnL</title>
+        </Helmet>
         <Sticky>
           <Menu style={{ margin: 0 }}>
             <Link to="/pnl">
@@ -61,13 +65,13 @@ class ClientTotalPnl extends React.Component {
         <table className="ui celled table">
           <thead>
             <tr>
-              {columns.map(col => (
+              {columns.map((col) => (
                 <th key={col}>{col}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {this.props.data.map(row => {
+            {this.props.data.map((row) => {
               if (row.unRealized_pnl > 0) pnl_flag = "positive";
               else if (row.unRealized_pnl === 0) pnl_flag = "";
               else pnl_flag = "negative";

@@ -9,6 +9,7 @@ let columns = [
   "ClientID",
   "Algo",
   "STOPER",
+  "MAINS",
   "Start/Stop Status",
   "LossLimit",
   "Quantity_Multiple",
@@ -140,6 +141,7 @@ class TradeState extends React.Component {
                       
                       
                     </td>
+                    <td>{row.main}</td>
                     <td>{row.Start_Stop}</td>
                     <td>{row.losslimit}</td>
                     <td>{row.quantity_multiple}</td>

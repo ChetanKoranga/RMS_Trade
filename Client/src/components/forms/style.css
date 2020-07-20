@@ -1,17 +1,17 @@
 body {
-    background-color: lightblue;
-    padding: 5px;
+  background-color: lightblue;
+  padding: 5px;
 }
 
 .center {
   display: flex;
   justify-content: center;
   align-items: center;
-  
-  
 }
 
-.o{
+.o {
   padding-top: 40px;
-  
+}
+.Red {
+  background-color: rgb(250, 145, 145);
 }
