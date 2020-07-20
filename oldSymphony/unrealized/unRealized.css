@@ -1,0 +1,16 @@
+.unRealized_table{
+    padding: 20px;
+    background-color: white(53, 62, 64, 0.9);
+    min-height: 100vh;
+  
+  
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+
+  #head{
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  
