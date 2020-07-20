@@ -1,4 +1,5 @@
 # RMS_Trade
 
-## 1. Goto Symphony and run SymphonyFlask.py server.
-## 2. Then goto Client folder and run command 'npm start' to run the react app.
+## Then goto Client directory and first run command ''npm i' then run command 'npm start' to run the react app.
+
+### Note-  If on Ubuntu make sure to run all the commands as admin. 
